@@ -1,11 +1,16 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 
-const PROJECTS_ROOT = '/home/wilox/projects';
+const PROJECTS_ROOT = process.env.PROJECTS_ROOT || path.join(os.homedir(), 'projects');
 const IGNORED_DIRS = new Set(['.atl', 'backup', 'node_modules', '.git']);
 
 export class GitService {
+  static getProjectsRoot(): string {
+    return PROJECTS_ROOT;
+  }
+
   static discoverProjects(): Array<{ name: string; path: string }> {
     if (!fs.existsSync(PROJECTS_ROOT)) {
       return [];
@@ -35,9 +40,9 @@ export class GitService {
     }
 
     try {
-      const branch = execSync('git rev-parse --abbrev-ref HEAD 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 1500 }).trim();
-      const lastCommit = execSync('git log -1 --pretty=format:"%h - %s (%cr)" 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 1500 }).trim();
-      const status = execSync('git status --porcelain 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 1500 }).trim();
+      const branch = execSync('git rev-parse --abbrev-ref HEAD 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 5000 }).trim();
+      const lastCommit = execSync('git log -1 --pretty=format:"%h - %s (%cr)" 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 5000 }).trim();
+      const status = execSync('git status --porcelain 2>/dev/null', { cwd: repoPath, encoding: 'utf-8', timeout: 5000 }).trim();
       return {
         isGit: true,
         branch: branch || undefined,

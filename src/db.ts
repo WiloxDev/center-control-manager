@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { ProjectSetting } from './types.ts';
 
-const DB_PATH = path.resolve(process.cwd(), 'data/mission-control.db');
+const DB_PATH = path.resolve(process.cwd(), process.env.DB_PATH || 'data/mission-control.db');
 const LEGACY_JSON_PATH = path.resolve(process.cwd(), 'data/tasks.json');
 
-export class MissionControlDb {
+export class CenterControlDb {
   private db: DatabaseSync;
 
   constructor(customPath: string = DB_PATH) {
@@ -41,7 +41,7 @@ export class MissionControlDb {
       CREATE TABLE IF NOT EXISTS task_notes (
         id TEXT PRIMARY KEY,
         task_id TEXT NOT NULL,
-        author TEXT NOT NULL DEFAULT 'j0k3r',
+        author TEXT NOT NULL DEFAULT 'user',
         content TEXT NOT NULL,
         created_at TEXT NOT NULL,
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
@@ -176,3 +176,6 @@ export class MissionControlDb {
     return this.db;
   }
 }
+
+// Backward-compatibility alias
+export const MissionControlDb = CenterControlDb;

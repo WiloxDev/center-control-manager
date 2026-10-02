@@ -1,6 +1,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { EngramService } from './engram-service.ts';
 import { TasksService } from './tasks-service.ts';
 import { GitService } from './git-service.ts';
@@ -32,12 +33,17 @@ function broadcastSse(eventType: string, data: any) {
   }
 }
 
+const isTestRunner =
+  process.env.NODE_ENV === 'test' ||
+  process.execArgv.includes('--test') ||
+  process.argv.some((a) => a.includes('test'));
+
 // Watch Engram SQLite directory for live WAL mutations
-const ENGRAM_DIR = '/home/wilox/.engram';
-if (fs.existsSync(ENGRAM_DIR)) {
+const ENGRAM_DIR = process.env.ENGRAM_DIR || path.join(os.homedir(), '.engram');
+if (!isTestRunner && fs.existsSync(ENGRAM_DIR)) {
   try {
     let watchDebounce: NodeJS.Timeout | null = null;
-    fs.watch(ENGRAM_DIR, (_eventType, filename) => {
+    fs.watch(ENGRAM_DIR, { persistent: false }, (_eventType, filename) => {
       if (filename && (filename.includes('engram.db') || filename.includes('wal'))) {
         if (watchDebounce) clearTimeout(watchDebounce);
         watchDebounce = setTimeout(() => {
@@ -51,11 +57,11 @@ if (fs.existsSync(ENGRAM_DIR)) {
 }
 
 // Watch Herdr directory for live session updates
-const HERDR_CONFIG_DIR = '/home/wilox/.config/herdr';
-if (fs.existsSync(HERDR_CONFIG_DIR)) {
+const HERDR_CONFIG_DIR = process.env.HERDR_CONFIG_DIR || path.join(os.homedir(), '.config', 'herdr');
+if (!isTestRunner && fs.existsSync(HERDR_CONFIG_DIR)) {
   try {
     let herdrDebounce: NodeJS.Timeout | null = null;
-    fs.watch(HERDR_CONFIG_DIR, (_eventType, filename) => {
+    fs.watch(HERDR_CONFIG_DIR, { persistent: false }, (_eventType, filename) => {
       if (filename && (filename.includes('session.json') || filename.includes('herdr.sock'))) {
         if (herdrDebounce) clearTimeout(herdrDebounce);
         herdrDebounce = setTimeout(async () => {
@@ -74,9 +80,10 @@ if (fs.existsSync(HERDR_CONFIG_DIR)) {
 }
 
 // Keep-alive heartbeat for SSE connections
-setInterval(() => {
+const heartbeatTimer = setInterval(() => {
   broadcastSse('heartbeat', { time: Date.now() });
 }, 15000);
+heartbeatTimer.unref();
 
 function sendJson(res: http.ServerResponse, data: any, statusCode = 200) {
   res.writeHead(statusCode, {
@@ -139,7 +146,7 @@ const server = http.createServer(async (req, res) => {
     const allTasks = tasks.getTasks({ includeNotes: false });
     const settingsMap = mcDb.getProjectSettings();
 
-    // 1. Discover local projects in /home/wilox/projects
+    // 1. Discover local projects in projects root
     const discovered = GitService.discoverProjects();
     const projectMap = new Map<string, {
       path: string;
@@ -164,10 +171,10 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    // 2. Merge Engram SQLite projects (including historical Windows/WSL sessions)
+    // 2. Merge Engram SQLite projects (including historical sessions)
     for (const engramProject of Object.keys(stats)) {
       if (!projectMap.has(engramProject) && engramProject.trim().length > 0) {
-        const guessedPath = `/home/wilox/projects/${engramProject}`;
+        const guessedPath = path.join(GitService.getProjectsRoot(), engramProject);
         const exists = fs.existsSync(guessedPath);
         const git = exists ? GitService.getRepoInfo(guessedPath) : { isGit: false };
 
@@ -184,9 +191,9 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Default core favorites if not explicitly set
-    const defaultFavorites = new Set(['sio-hotel', 'sio', 'sio-fact']);
+    const defaultFavorites = new Set<string>();
     // Default residual projects to hide if not explicitly configured
-    const defaultResiduals = new Set(['backend', 'j0k3r', 'projects', 'wilox']);
+    const defaultResiduals = new Set(['backend', 'projects']);
 
     const summaries: ProjectSummary[] = Array.from(projectMap.entries()).map(([name, info]) => {
       const pStats = stats[name] || { total: 0, decisions: 0, bugfixes: 0, summaries: 0 };
@@ -323,7 +330,7 @@ const server = http.createServer(async (req, res) => {
           return sendJson(res, { error: 'content is required' }, 400);
         }
         const note = tasks.addNote(taskId, {
-          author: payload.author || 'j0k3r',
+          author: payload.author || process.env.USER || 'user',
           content: payload.content.trim(),
         });
         if (!note) {
@@ -593,13 +600,17 @@ const server = http.createServer(async (req, res) => {
   res.end('Not Found');
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n=======================================================`);
-  console.log(`🚀 SIO MISSION CONTROL & ENGINEERING COCKPIT 2026`);
-  console.log(`🌐 Local URL:     http://localhost:${PORT}`);
-  console.log(`📡 Network URL:   http://0.0.0.0:${PORT}`);
-  console.log(`💾 Tasks SQLite:  data/mission-control.db (Native WAL)`);
-  console.log(`🧠 Engram SQLite: /home/wilox/.engram/engram.db (Read-Only)`);
-  console.log(`⚡ SSE Streaming: /api/stream (Live heartbeats & watchers)`);
-  console.log(`=======================================================\n`);
-});
+export { server, engram, tasks, mcDb, terminals, cpamc, telemetry };
+
+if (!isTestRunner) {
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n=======================================================`);
+    console.log(`🚀 CENTER CONTROL MANAGER 2026`);
+    console.log(`🌐 Local URL:     http://localhost:${PORT}`);
+    console.log(`📡 Network URL:   http://0.0.0.0:${PORT}`);
+    console.log(`💾 Tasks SQLite:  data/mission-control.db (Native WAL)`);
+    console.log(`🧠 Engram SQLite: ${engram.getDbPath()} (${engram.isConnected() ? 'Read-Only' : 'Not Connected'})`);
+    console.log(`⚡ SSE Streaming: /api/stream (Live heartbeats & watchers)`);
+    console.log(`=======================================================\n`);
+  });
+}

@@ -37,7 +37,7 @@ describe('TerminalsService — Herdr & Project Sessions Detection', () => {
       assert.ok(sess.projectPath);
       assert.strictEqual(typeof sess.isGit, 'boolean');
       assert.ok(sess.harness);
-      assert.ok(['j0k3r-pi', 'gentle-pi', 'gentle-ai', 'pi', 'shell', 'other'].includes(sess.harness.type));
+      assert.ok(['gentle-pi', 'gentle-ai', 'pi', 'shell', 'other'].includes(sess.harness.type));
       assert.ok(['working', 'blocked', 'idle', 'unknown'].includes(sess.harness.status));
     }
   });

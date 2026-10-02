@@ -1296,7 +1296,7 @@
                   <span>Terminales & Sesiones de Coding Agents</span>
                 </h1>
                 <p class="text-xs text-slate-400 max-w-2xl leading-relaxed">
-                  Monitoreo en vivo de paneles de terminales, sockets IPC y procesos de coding agents (<strong class="text-purple-300">j0k3r-pi</strong>, <strong class="text-indigo-300">gentle-pi</strong>, <strong class="text-sky-300">gentle-ai</strong>) mapeados contra los proyectos de <code class="text-slate-300">/home/wilox/projects</code>.
+                  Monitoreo en vivo de paneles de terminales, sockets IPC y procesos de coding agents (<strong class="text-indigo-300">gentle-pi</strong>, <strong class="text-sky-300">gentle-ai</strong>, <strong class="text-slate-300">pi</strong>) mapeados contra el espacio de trabajo local.
                 </p>
               </div>
 
@@ -1341,7 +1341,7 @@
                     <span>Versión: <strong class="text-white">v0.9.1</strong></span>
                     <span>PID: <strong class="text-slate-300">{{ terminalRuntimes.find(r => r.runtime === 'herdr')?.pid || 2532 }}</strong></span>
                   </div>
-                  <div class="text-[10px] text-slate-500 truncate" title="/home/wilox/.config/herdr/herdr.sock">
+                  <div class="text-[10px] text-slate-500 truncate" title="herdr.sock (IPC Unix)">
                     🔌 herdr.sock (IPC Unix)
                   </div>
                 </div>
@@ -1425,7 +1425,7 @@
             <span class="text-3xl block mb-2">🖥️</span>
             <p class="text-slate-300 text-sm font-semibold">No se detectaron sesiones activas con los filtros actuales.</p>
             <p class="text-xs text-slate-500 max-w-md mx-auto">
-              Asegúrate de que <strong class="text-purple-400">Herdr</strong> esté corriendo o ejecuta un coding agent como <code class="text-slate-300">jpi</code> en cualquier terminal de <code class="text-slate-300">/home/wilox/projects</code>.
+              Asegúrate de que <strong class="text-purple-400">Herdr</strong> esté corriendo o ejecuta un coding agent como <code class="text-indigo-300">gentle-pi</code> en cualquier terminal del portafolio.
             </p>
             <button @click="terminalsFilterStatus = 'all'; terminalsFilterRuntime = 'all'" class="mt-3 text-xs text-purple-400 hover:text-purple-300 underline code-font cursor-pointer">
               Limpiar filtros
@@ -1484,7 +1484,7 @@
                   <div class="flex items-center justify-between text-[11px]">
                     <span class="text-slate-400 flex items-center gap-1">
                       <span>🤖 Harness:</span>
-                      <strong :class="sess.harness?.type === 'j0k3r-pi' ? 'text-purple-300' : 'text-slate-200'">{{ sess.harness?.type || 'Shell' }}</strong>
+                      <strong :class="sess.harness?.type === 'gentle-pi' ? 'text-indigo-300' : 'text-slate-200'">{{ sess.harness?.type || 'Shell' }}</strong>
                     </span>
                     <span v-if="sess.gitBranch" class="text-slate-400 flex items-center gap-1">
                       <span>🌿</span>
@@ -4365,10 +4365,8 @@
         const cctvLayout = ref('3'); // '1' | '2' | '3' | '2x2'
         const cctvCollapseSidebar = ref(true);
         const cctvChannels = ref([
-          { id: 1, project: 'sio-hotel', page: 1, perPage: 5 },
-          { id: 2, project: 'sio-mission-control', page: 1, perPage: 5 },
-          { id: 3, project: 'sio', page: 1, perPage: 5 },
-          { id: 4, project: 'sio-fact', page: 1, perPage: 5 }
+          { id: 1, project: 'center-control-manager', page: 1, perPage: 5 },
+          { id: 2, project: 'projects', page: 1, perPage: 5 }
         ]);
 
         // Proyectos ordenados dinámicamente por actividad reciente
@@ -4442,7 +4440,7 @@
               id: `fallback:${pName}`,
               runtime: 'system',
               project: pName,
-              projectPath: `/home/wilox/projects/${pName}`,
+              projectPath: pName,
               title: pName,
               isGit: true,
               harness: { type: 'shell', status: 'idle' }
@@ -5461,7 +5459,7 @@
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                author: 'j0k3r',
+                author: 'user',
                 content: newNoteText.value.trim()
               })
             });

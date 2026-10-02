@@ -1,4 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
+import os from 'node:os';
+import path from 'node:path';
 import type {
   EngramObservation,
   EngramSession,
@@ -8,7 +10,7 @@ import type {
   ParsedSessionSummary,
 } from './types.ts';
 
-const ENGRAM_DB_PATH = '/home/wilox/.engram/engram.db';
+const ENGRAM_DB_PATH = process.env.ENGRAM_DB_PATH || path.join(os.homedir(), '.engram', 'engram.db');
 
 export function normalizeUtcTimestamp(val: string | null | undefined): string {
   if (!val) return '';
@@ -27,6 +29,14 @@ export class EngramService {
   constructor(dbPath: string = ENGRAM_DB_PATH) {
     this.dbPath = dbPath;
     this.connect();
+  }
+
+  getDbPath(): string {
+    return this.dbPath;
+  }
+
+  isConnected(): boolean {
+    return this.db !== null;
   }
 
   private connect() {

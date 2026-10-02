@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import type {
   TelemetryStats,
   TelemetryAccountItem,
@@ -8,8 +9,8 @@ import type {
   TelemetrySnapshot,
 } from './types.ts';
 
-const DEFAULT_BASE_URL = 'http://192.168.10.150:8317';
-const KEY_PATH = path.join(process.env.HOME || '/home/wilox', '.cliproxy_management_key');
+const DEFAULT_BASE_URL = process.env.EGO_PROXY_URL || 'http://127.0.0.1:8317';
+const KEY_PATH = process.env.CLIPROXY_KEY_PATH || path.join(os.homedir(), '.cliproxy_management_key');
 
 export class TelemetryService {
   private baseUrl: string;
@@ -61,56 +62,43 @@ export class TelemetryService {
     let prefix = '';
     let cleanName = acc;
 
-    // Detectar prefijos canónicos y etiquetas de familia
-    if (acc.includes('son-maribelluz') || acc === 'antigravity-son-maribelluz.json') {
+    // Sanitize account string to prevent private emails/names from leaking
+    const sanitizedAccount = acc
+      .replace(/^([a-zA-Z0-9_\-\.]+)(@.+)$/, (_, u, d) => `${u.slice(0, 2)}***${d}`)
+      .replace(/wilsonlavio\w*/gi, 'pool-account')
+      .replace(/maribelluz\w*/gi, 'pool-account')
+      .replace(/infosoytec/gi, 'pool-account');
+
+    // Detect standard model family prefixes and labels
+    if (acc.includes('agy_son') || acc.includes('son-') || acc.includes('sonnet')) {
       prefix = 'agy_son';
-      cleanName = '🟣 Sonnet · Activa (maribelluz)';
-    } else if (acc.includes('son-wilsonlavio11') || acc === 'antigravity-son-wilsonlavio11.json') {
-      prefix = 'agy_son_1';
-      cleanName = '💤 Sonnet · Reserva 1 (wilsonlavio11)';
-    } else if (acc.includes('son-infosoytec') || acc.includes('agy_son_2')) {
-      prefix = 'agy_son_2';
-      cleanName = '💤 Sonnet · Reserva 2 (infosoytec)';
-    } else if (acc.includes('son-wilsonlavio7') || acc.includes('agy_son_3')) {
-      prefix = 'agy_son_3';
-      cleanName = '💤 Sonnet · Reserva 3 (wilsonlavio7)';
-    } else if (acc.includes('son-infowilsonlavio') || acc.includes('agy_son_4')) {
-      prefix = 'agy_son_4';
-      cleanName = '💤 Sonnet · Reserva 4 (infowilsonlavio)';
-    } else if (acc.includes('son-wilsonlavio9') || acc.includes('agy_son_5')) {
-      prefix = 'agy_son_5';
-      cleanName = '💤 Sonnet · Reserva 5 (wilsonlavio9)';
-    } else if (acc.includes('g2-infosoytec') || acc === 'antigravity-g2-infosoytec.json' || acc.includes('agy_g2')) {
+      cleanName = '🟣 Sonnet · Model Pool';
+    } else if (acc.includes('agy_g2') || acc.includes('g2-')) {
       prefix = 'agy_g2';
-      cleanName = '🟢 Gemini 2 · Chat (infosoytec)';
-    } else if (acc.includes('g2-infowilsonlavio') || acc.includes('agy_g2_1')) {
-      prefix = 'agy_g2_1';
-      cleanName = '💤 Gemini 2 · Reserva 1 (infowilsonlavio)';
-    } else if (acc.includes('g2-wilsonlavio9') || acc.includes('agy_g2_2')) {
-      prefix = 'agy_g2_2';
-      cleanName = '💤 Gemini 2 · Reserva 2 (wilsonlavio9)';
-    } else if (acc.includes('g1-maribelluz') || acc === 'antigravity-g1-maribelluz.json' || acc.includes('agy_g1')) {
+      cleanName = '🟢 Gemini 2 · Interactive';
+    } else if (acc.includes('agy_g1') || acc.includes('g1-')) {
       prefix = 'agy_g1';
-      cleanName = '🟢 Gemini 1 · Subagentes (maribelluz)';
-    } else if (acc.includes('g1-wilsonlavio7') || acc.includes('agy_g1_1')) {
-      prefix = 'agy_g1_1';
-      cleanName = '💤 Gemini 1 · Reserva 1 (wilsonlavio7)';
-    } else if (acc.includes('g1-wilsonlavio11') || acc.includes('agy_g1_2')) {
-      prefix = 'agy_g1_2';
-      cleanName = '💤 Gemini 1 · Reserva 2 (wilsonlavio11)';
-    } else if (acc.includes('opencode')) {
+      cleanName = '🟢 Gemini 1 · Subagents';
+    } else if (acc.includes('opencode') || acc.includes('ocgo')) {
       prefix = 'ocgo';
       cleanName = '🛡️ OpenCode Go (Salvavidas)';
-    } else if (acc.includes('nvidia')) {
+    } else if (acc.includes('nvidia') || acc.includes('nv')) {
       prefix = 'nv';
       cleanName = '🚀 NVIDIA NIM (Especialista)';
     } else if (acc.startsWith('antigravity-')) {
       const email = acc.replace('antigravity-', '').replace('.json', '');
-      cleanName = `📁 ${email} (Histórico)`;
+      const masked = email.replace(/^(.{2})[^@]+(@.+)$/, '$1***$2');
+      cleanName = `📁 ${masked}`;
     }
+
+    cleanName = cleanName
+      .replace(/wilsonlavio\w*/gi, 'pool')
+      .replace(/maribelluz\w*/gi, 'pool')
+      .replace(/infosoytec/gi, 'pool');
 
     return {
       ...item,
+      account: sanitizedAccount,
       prefix: prefix || undefined,
       cleanName,
     };

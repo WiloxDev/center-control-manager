@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import net from 'node:net';
 import { execSync } from 'node:child_process';
 import { GitService } from './git-service.ts';
@@ -12,10 +13,10 @@ import type {
   TerminalsDataResponse,
 } from './types.ts';
 
-const HERDR_DIR = '/home/wilox/.config/herdr';
+const HERDR_DIR = process.env.HERDR_DIR || path.join(os.homedir(), '.config', 'herdr');
 const HERDR_SOCKET = path.join(HERDR_DIR, 'herdr.sock');
 const HERDR_SESSION_JSON = path.join(HERDR_DIR, 'session.json');
-const PROJECTS_ROOT = '/home/wilox/projects';
+const PROJECTS_ROOT = process.env.PROJECTS_ROOT || path.join(os.homedir(), 'projects');
 
 export class TerminalsService {
   private socketPath: string;
@@ -73,7 +74,7 @@ export class TerminalsService {
         version = verOut.replace(/^herdr\s*/i, '');
       }
     } catch {
-      installed = fs.existsSync('/home/wilox/.local/bin/herdr');
+      installed = fs.existsSync(path.join(os.homedir(), '.local', 'bin', 'herdr'));
       if (installed) version = '0.9.1';
     }
 
@@ -148,7 +149,7 @@ export class TerminalsService {
   }
 
   /**
-   * Scan active processes under /home/wilox/projects to correlate PIDs, memory, CPU, and harness types
+   * Scan active processes under projectsRoot to correlate PIDs, memory, CPU, and harness types
    */
   getProjectProcesses(): Map<string, {
     pid: number;
@@ -206,13 +207,10 @@ export class TerminalsService {
         let status: TerminalAgentStatus = 'idle';
 
         const isPi = cmdline.includes('pi') || cmdline.includes('pi-coding-agent');
-        const piDir = envVars.get('PI_CODING_AGENT_DIR') || '';
-        const isGentle = envVars.has('GENTLE_PI_QUIET_TOOLS') || cmdline.includes('gentle');
+        const isGentle = envVars.has('GENTLE_PI_QUIET_TOOLS') || cmdline.includes('gentle') || environStr.includes('gentle');
 
         if (isPi) {
-          if (piDir.includes('agent-j0k3r')) {
-            harnessType = 'j0k3r-pi';
-          } else if (isGentle) {
+          if (isGentle) {
             harnessType = 'gentle-pi';
           } else {
             harnessType = 'pi';
@@ -352,7 +350,7 @@ export class TerminalsService {
                 const harnessType: TerminalHarnessType = hasAgent
                   ? (matchedProc?.harnessType && matchedProc.harnessType !== 'shell'
                       ? matchedProc.harnessType
-                      : (paneObj.agent_session?.agent === 'pi' || agentInfo.agent === 'pi' ? 'j0k3r-pi' : 'pi'))
+                      : (paneObj.agent_session?.agent === 'pi' || agentInfo.agent === 'pi' ? 'gentle-pi' : 'pi'))
                   : 'shell';
 
                 const harness: TerminalHarnessInfo = {
@@ -395,7 +393,7 @@ export class TerminalsService {
       }
     }
 
-    // 2. Add any standalone processes running under /home/wilox/projects that are NOT in Herdr
+    // 2. Add any standalone processes running under projectsRoot that are NOT in Herdr
     const capturedPaneIds = new Set(sessions.filter((s) => s.paneId).map((s) => s.paneId));
     for (const proc of procMap.values()) {
       if (proc.herdrPaneId && capturedPaneIds.has(proc.herdrPaneId)) {

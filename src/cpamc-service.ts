@@ -22,10 +22,7 @@ export class CpamcService {
       // 1. Ejecutar cpamc-auto-switcher -list
       const { stdout } = await execFileAsync('cpamc-auto-switcher', ['-list'], {
         timeout: 10_000,
-        env: {
-          ...process.env,
-          PATH: `${process.env.HOME}/.local/share/mise/installs/go/1.27.1/bin:${process.env.PATH || ''}`,
-        },
+        env: process.env,
       });
 
       const accounts = this.parseListOutput(stdout);
@@ -61,8 +58,8 @@ export class CpamcService {
           modelTarget: 'gemini-3.8-flash-high',
           status: 'HEALTHY',
           activeAccount: {
-            id: 'maribelluz...catro@gmail.com',
-            email: 'maribelluz...catro@gmail.com',
+            id: 'pool-g1-primary@example.com',
+            email: 'pool-g1-primary@example.com',
             prefix: 'agy_g1',
             status: 'ACTIVE',
             fiveHourConsumed: 28.0,
@@ -71,8 +68,8 @@ export class CpamcService {
           },
           reserves: [
             {
-              id: 'wilsonlavio7@gmail.com',
-              email: 'wilsonlavio7@gmail.com',
+              id: 'pool-g1-reserve@example.com',
+              email: 'pool-g1-reserve@example.com',
               prefix: 'agy_g1_1',
               status: 'RESERVE',
               fiveHourConsumed: 0.0,
@@ -90,8 +87,8 @@ export class CpamcService {
           modelTarget: 'gemini-3.8-flash-high',
           status: 'WARNING',
           activeAccount: {
-            id: 'infosoytec@gmail.com',
-            email: 'infosoytec@gmail.com',
+            id: 'pool-g2-primary@example.com',
+            email: 'pool-g2-primary@example.com',
             prefix: 'agy_g2',
             status: 'ACTIVE',
             fiveHourConsumed: 74.0,
@@ -100,8 +97,8 @@ export class CpamcService {
           },
           reserves: [
             {
-              id: 'infowilsonlavio@gmail.com',
-              email: 'infowilsonlavio@gmail.com',
+              id: 'pool-g2-reserve@example.com',
+              email: 'pool-g2-reserve@example.com',
               prefix: 'agy_g2_1',
               status: 'RESERVE',
               fiveHourConsumed: 0.0,
@@ -119,8 +116,8 @@ export class CpamcService {
           modelTarget: 'claude-sonnet-4-6',
           status: 'HEALTHY',
           activeAccount: {
-            id: 'wilsonlavio11@gmail.com',
-            email: 'wilsonlavio11@gmail.com',
+            id: 'pool-son-primary@example.com',
+            email: 'pool-son-primary@example.com',
             prefix: 'agy_son',
             status: 'ACTIVE',
             fiveHourConsumed: 0.0,
@@ -129,8 +126,8 @@ export class CpamcService {
           },
           reserves: [
             {
-              id: 'wilsonlavio9@gmail.com',
-              email: 'wilsonlavio9@gmail.com',
+              id: 'pool-son-reserve@example.com',
+              email: 'pool-son-reserve@example.com',
               prefix: 'agy_son_1',
               status: 'RESERVE',
               fiveHourConsumed: null,
@@ -160,10 +157,7 @@ export class CpamcService {
     try {
       const { stdout, stderr } = await execFileAsync('cpamc-auto-switcher', ['-check', '-force', '-verbose'], {
         timeout: 15_000,
-        env: {
-          ...process.env,
-          PATH: `${process.env.HOME}/.local/share/mise/installs/go/1.27.1/bin:${process.env.PATH || ''}`,
-        },
+        env: process.env,
       });
 
       this.cache = null; // invalidar caché

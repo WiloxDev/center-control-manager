@@ -288,13 +288,13 @@ export class TasksService {
     return this.updateTask(id, { status });
   }
 
-  addNote(taskId: string, noteData: { author?: 'j0k3r' | 'ai' | 'system'; content: string }): TaskNote | null {
+  addNote(taskId: string, noteData: { author?: 'user' | 'ai' | 'system' | string; content: string }): TaskNote | null {
     const existing = this.getTaskById(taskId);
     if (!existing) return null;
 
     const id = `note-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
     const now = new Date().toISOString();
-    const author = noteData.author || 'j0k3r';
+    const author = noteData.author || 'user';
 
     const stmt = this.db.prepare(`
       INSERT INTO task_notes (id, task_id, author, content, created_at)

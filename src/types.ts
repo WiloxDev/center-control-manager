@@ -9,7 +9,7 @@ export type ProjectOrigin = 'LOCAL_GIT' | 'LOCAL_DIR' | 'HISTORICAL_ENGRAM';
 export interface TaskNote {
   id: string;
   taskId: string;
-  author: 'j0k3r' | 'ai' | 'system';
+  author: 'user' | 'ai' | 'system' | string;
   content: string;
   createdAt: string;
 }
@@ -142,7 +142,7 @@ export interface ProjectSummary {
 }
 
 export type TerminalRuntimeType = 'herdr' | 'warp' | 'orca' | 'system';
-export type TerminalHarnessType = 'j0k3r-pi' | 'gentle-pi' | 'gentle-ai' | 'pi' | 'shell' | 'other';
+export type TerminalHarnessType = 'gentle-pi' | 'gentle-ai' | 'pi' | 'shell' | 'other';
 export type TerminalAgentStatus = 'working' | 'blocked' | 'idle' | 'unknown';
 
 export interface TerminalRuntimeStatus {
@@ -174,8 +174,8 @@ export interface TerminalSessionItem {
   tabId?: string;
   paneId?: string;
   title: string;
-  project: string; // e.g. "sio-mission-control"
-  projectPath: string; // e.g. "/home/wilox/projects/sio-mission-control"
+  project: string; // e.g. "center-control-manager"
+  projectPath: string; // e.g. "/path/to/project"
   isGit: boolean;
   gitBranch?: string;
   isClean?: boolean;
