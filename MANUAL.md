@@ -6,16 +6,31 @@ Bienvenido a la guía oficial de implementación de **Center Control Manager**. 
 ---
 
 ## 📋 Índice
-1. [Requisitos Previos del Sistema](#1-requisitos-previos-del-sistema)
-2. [Instalación Rápida (3 Minutos)](#2-instalación-rápida-3-minutos)
-3. [Escenarios de Integración con el Ecosistema](#3-escenarios-de-integración-con-el-ecosistema)
+1. [Prompt Ultra-Rápido para Agentes de IA](#0-prompt-ultra-rápido-para-agentes-de-ia-1-línea)
+2. [Requisitos Previos del Sistema](#1-requisitos-previos-del-sistema)
+3. [Instalación Manual en 3 Pasos](#2-instalación-manual-en-3-pasos)
+4. [Escenarios de Integración con el Ecosistema](#3-escenarios-de-integración-con-el-ecosistema)
    - [Escenario A: Ecosistema Completo (Gentle-Pi + Engram)](#escenario-a-ecosistema-completo-gentle-pi--engram)
    - [Escenario B: Modo Standalone (Sin IA / Solo Git y Radar)](#escenario-b-modo-standalone-sin-ia--solo-git-y-radar)
    - [Escenario C: Rutas y Puertos Personalizados](#escenario-c-rutas-y-puertos-personalizados)
-4. [Guía de Uso del Dashboard](#4-guía-de-uso-del-dashboard)
-5. [Variables de Entorno Soportadas](#5-variables-de-entorno-soportadas)
-6. [Solución de Problemas (Troubleshooting)](#6-solución-de-problemas-troubleshooting)
-7. [Casos de Uso del Mundo Real](#7-casos-de-uso-del-mundo-real)
+5. [Guía de Uso del Dashboard](#4-guía-de-uso-del-dashboard)
+6. [Variables de Entorno Soportadas](#5-variables-de-entorno-soportadas)
+7. [Solución de Problemas (Troubleshooting)](#6-solución-de-problemas-troubleshooting)
+8. [Casos de Uso del Mundo Real](#7-casos-de-uso-del-mundo-real)
+
+---
+
+## 0. Prompt Ultra-Rápido para Agentes de IA (1 Línea)
+
+Si tú o tu cliente usan un agente de Inteligencia Artificial (Gentle-Pi, Claude Code, Cursor, Copilot, etc.), **solo copia y pega este comando en el chat del agente**:
+
+```text
+Clona https://github.com/WiloxDev/center-control-manager.git, lee su AGENT_INSTALL.md y ponlo a correr en http://localhost:3099
+```
+
+El agente clonará el repositorio, leerá la directiva de instalación automatizada [`AGENT_INSTALL.md`](./AGENT_INSTALL.md), validará el entorno y dejará el dashboard activo de inmediato.
+
+---
 
 ---
 
@@ -35,7 +50,7 @@ Center Control Manager está diseñado bajo una arquitectura **Local-First**, ul
 
 ---
 
-## 2. Instalación Rápida (3 Minutos)
+## 2. Instalación Manual en 3 Pasos
 
 Ejecuta los siguientes comandos en tu terminal:
 

@@ -18,7 +18,16 @@ Evitar la amnesia y dispersión de tareas en sesiones de desarrollo intensivo:
 
 ## 🚀 Inicio Rápido
 
-> 📖 **Guía Completa:** Consulta el [Manual de Implementación e Instalación detallado (MANUAL.md)](./MANUAL.md) con escenarios de integración y solución de problemas.
+### 🤖 ¿Usas un Agente de IA (Gentle-Pi, Claude Code, Cursor)?
+Pega este prompt directo en tu agente:
+```text
+Clona https://github.com/WiloxDev/center-control-manager.git, lee su AGENT_INSTALL.md y ponlo a correr en http://localhost:3099
+```
+
+---
+
+### 💻 Instalación Manual
+> 📖 Para ver escenarios detallados y solución de problemas, consulta el [Manual de Implementación (MANUAL.md)](./MANUAL.md).
 
 ```bash
 # Clonar o entrar al proyecto
