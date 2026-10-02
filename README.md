@@ -18,6 +18,8 @@ Evitar la amnesia y dispersión de tareas en sesiones de desarrollo intensivo:
 
 ## 🚀 Inicio Rápido
 
+> 📖 **Guía Completa:** Consulta el [Manual de Implementación e Instalación detallado (MANUAL.md)](./MANUAL.md) con escenarios de integración y solución de problemas.
+
 ```bash
 # Clonar o entrar al proyecto
 cd center-control-manager
