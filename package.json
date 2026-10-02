@@ -1,0 +1,21 @@
+{
+  "name": "center-control-manager",
+  "version": "1.0.0",
+  "description": "Cross-Project Engineering Center Control Manager, Action Radar & Decision Ledger",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "node --experimental-strip-types --watch src/server.ts",
+    "start": "node --experimental-strip-types src/server.ts",
+    "test": "node --experimental-strip-types --test test/*.test.ts"
+  },
+  "keywords": [
+    "center-control-manager",
+    "developer-portal",
+    "action-radar",
+    "decision-ledger",
+    "engram"
+  ],
+  "author": "j0k3r / Wilox",
+  "license": "UNLICENSED"
+}

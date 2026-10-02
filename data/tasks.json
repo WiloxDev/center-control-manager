@@ -1,0 +1,46 @@
+[
+  {
+    "id": "task-001",
+    "project": "sio-hotel",
+    "title": "Configuración de credenciales de pasarelas en producción",
+    "description": "Configurar llaves API de producción para pasarelas de pago (Niubiz / Culqi / Stripe) en el entorno de despliegue VPS.",
+    "category": "INFRASTRUCTURE",
+    "priority": "HIGH",
+    "status": "PENDING",
+    "createdAt": "2026-09-26T10:00:00.000Z",
+    "tags": ["fintech", "payments", "production"]
+  },
+  {
+    "id": "task-002",
+    "project": "sio-hotel",
+    "title": "Verificación de backup automatizado a S3 / Cloudflare R2",
+    "description": "Probar restauración en seco desde el script de replicación s3-backup.sh en PostgreSQL.",
+    "category": "DEVOPS",
+    "priority": "MEDIUM",
+    "status": "PENDING",
+    "createdAt": "2026-09-26T10:05:00.000Z",
+    "tags": ["backup", "disaster-recovery"]
+  },
+  {
+    "id": "task-003",
+    "project": "sio",
+    "title": "Integración del frontend POS con lector biométrico o NFC",
+    "description": "Evaluar la integración de autenticación de cajero vía lector NFC / tarjeta de proximidad para el punto de venta minorista.",
+    "category": "HARDWARE",
+    "priority": "LOW",
+    "status": "PENDING",
+    "createdAt": "2026-09-26T10:10:00.000Z",
+    "tags": ["pos", "hardware", "research"]
+  },
+  {
+    "id": "task-004",
+    "project": "sio-hotel",
+    "title": "Maqueta 3D Digital Twin de Habitaciones (Tres.js)",
+    "description": "Explorar prototipo de vista 3D interactiva del hotel para selección visual de habitaciones por parte del huésped (Ola 5).",
+    "category": "FUTURE_IDEA",
+    "priority": "LOW",
+    "status": "DEFERRED",
+    "createdAt": "2026-09-26T10:15:00.000Z",
+    "tags": ["3d", "tresjs", "ux"]
+  }
+]
