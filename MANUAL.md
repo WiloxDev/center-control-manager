@@ -15,6 +15,7 @@ Bienvenido a la guía oficial de implementación de **Center Control Manager**. 
 4. [Guía de Uso del Dashboard](#4-guía-de-uso-del-dashboard)
 5. [Variables de Entorno Soportadas](#5-variables-de-entorno-soportadas)
 6. [Solución de Problemas (Troubleshooting)](#6-solución-de-problemas-troubleshooting)
+7. [Casos de Uso del Mundo Real](#7-casos-de-uso-del-mundo-real)
 
 ---
 
@@ -179,6 +180,42 @@ Si tienes una versión anterior a v22, actualiza Node.js desde [nodejs.org](http
 nvm install 24
 nvm use 24
 ```
+
+---
+
+## 7. Casos de Uso del Mundo Real
+
+### 🚀 Caso 1: Sesión de Desarrollo Asistida con Gentle-Pi + Engram
+- **El reto:** Estás trabajando en una refactorización compleja con un coding agent (`gentle-pi`). Mientras el agente escribe código, notas que hace falta actualizar los índices de la base de datos y añadir un endpoint de salud.
+- **Cómo te ayuda:** 
+  1. Abres el **Radar de Pendientes** y creas dos tareas rápidas asociadas a ese proyecto en 5 segundos sin pausar al agente ni cambiar de ventana.
+  2. En la pestaña **Terminales**, monitoreas en vivo el estado del agente: ves si está `WORKING` (programando) o `BLOCKED` (esperando tu aprobación).
+  3. Al terminar la sesión, el agente guarda automáticamente la memoria en **Engram**, y tú puedes leer en el **Pulso de Actividad** el resumen estructurado con los objetivos logrados y los siguientes pasos.
+
+### 📁 Caso 2: Gobernanza de Portafolio Multi-Repositorio (Freelancer o Tech Lead)
+- **El reto:** Lideras o mantienes 8 repositorios distintos (`backend-api`, `mobile-app`, `admin-portal`, `auth-service`, etc.). Cada mañana pierdes 15 minutos abriendo carpetas y ejecutando `git status` para recordar qué dejaste a medias.
+- **Cómo te ayuda:**
+  1. Abres la pestaña **Portafolio & Git Health**: ves en una sola pantalla todos tus repositorios, la rama Git activa de cada uno, cuáles tienen cambios sin commitear (`dirty`) y cuántas tareas pendientes tiene cada proyecto.
+  2. Marcas con estrella ⭐ tus 2 proyectos prioritarios del día para que siempre se ubiquen al principio de la lista.
+
+### 🏛️ Caso 3: Bitácora de Decisiones Arquitectónicas (ADR Ledger)
+- **El reto:** Un compañero de equipo o tú mismo se preguntan: *"¿Por qué implementamos autenticación con cookies HttpOnly en vez de JWT en localStorage?"* o *"¿Por qué usamos SQLite en lugar de PostgreSQL en este servicio?"*.
+- **Cómo te ayuda:**
+  1. Entras a la pestaña **Conocimiento & Decisiones (ADR)**.
+  2. Escribes en el buscador `autenticacion` o `sqlite`: el motor de texto completo (FTS5) te devuelve al instante la tarjeta con la decisión exacta tomada hace semanas, explicando el **Qué**, el **Por qué**, el **Dónde** y el **Aprendizaje técnico**.
+
+### ☕ Caso 4: Reanudación Rápida tras Vacaciones o Fin de Semana (Cero Amnesia)
+- **El reto:** Vuelves a programar el lunes por la mañana después del fin de semana o de unas vacaciones y no recuerdas en qué punto exacto te quedaste.
+- **Cómo te ayuda:**
+  1. Entras al **Pulso de Actividad** y seleccionas la última sesión de trabajo.
+  2. Lees directamente la sección `Next Steps` generada por el sistema: sabes con precisión quirúrgica qué archivo abrir y qué tarea continuar en menos de 30 segundos.
+
+### 🧹 Caso 5: Limpieza de Deuda Técnica y Refactorización Ágil (Kanban)
+- **El reto:** Tu equipo identifica pequeñas mejoras durante el code review que no justifican crear un ticket formal y pesado en Jira o Linear.
+- **Cómo te ayuda:**
+  1. Las registras en el **Action Radar** como tareas de categoría `BUGFIX` o `INFRASTRUCTURE`.
+  2. Durante los sprints de mantenimiento, abres la vista **Kanban**, arrastras las tareas de `PENDING` a `IN_PROGRESS` y finalmente a `COMPLETED`.
+  3. Todo queda registrado en el historial de auditoría interna de la base de datos local.
 
 ---
 
